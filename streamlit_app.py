@@ -24,7 +24,8 @@ def plot():
 # #load data
 @st.cache_data
 def load_data():
-    path = '/Users/mgoe/Documents/PythonPrograms/data/allstock_prices.csv'
+    # path = '/Users/mgoe/Documents/PythonPrograms/data/allstock_prices.csv'
+    path = 'allstock_prices.csv'
     asset_prices = pd.read_csv(path,
                      date_parser=lambda dt: pd.to_datetime(dt, format='%Y-%m-%d'),
                      index_col = 0).dropna()
