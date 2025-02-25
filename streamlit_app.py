@@ -2,45 +2,67 @@ import streamlit as st
 import numpy as np
 import time
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
+def plot():
 
-st.title("Alteratives CME - Beta Models")
-st.write(
-    "beta models"
-)
-#Model 0
-progress_bar = st.sidebar.progress(0)
-status_text = st.sidebar.empty()
-last_rows = np.random.randn(1, 1)
-chart = st.line_chart(last_rows)
+    df = load_data()
 
-for i in range(1, 101):
-    new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-    status_text.text(f"{i}% complete")
-    chart.add_rows(new_rows)
-    progress_bar.progress(i)
-    last_rows = new_rows
-    time.sleep(0.05)
+    clist = df.columns
 
-#Modle 1
-st.write(
-    "beta models"
-)
-chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
+    stocks = st.multiselect("Select stock", clist)
+    st.header("You selected: {}".format(", ".join(stocks)))
 
+    fig = go.Figure()
+    for stock in stocks:
+        fig = fig.add_trace(go.Scatter(y=df[stock], name=stock, orientation='h'))
 
-st.line_chart(chart_data)
+    st.plotly_chart(fig)
 
-# Model 2
-st.write(
-    "beta models"
-)
-st.line_chart(chart_data)
+# 
+# #load data
+@st.cache_data
+def load_data():
+    path = '/Users/mgoe/Documents/PythonPrograms/data/allstock_prices.csv'
+    asset_prices = pd.read_csv(path,
+                     date_parser=lambda dt: pd.to_datetime(dt, format='%Y-%m-%d'),
+                     index_col = 0).dropna()
+    return asset_prices
 
+asset_prices = load_data()
 
+###############################################################################
+#Start building Streamlit App
+########################################
 
+#add sidebar
+add_sidebar = st.sidebar.selectbox('Select Model', ('Beta Model','Income Model'))
+add_sidebar2 = st.sidebar.selectbox('Select Asset',('Private Equity','Private Credit','Private Real Estate'))
 
-progress_bar.empty()
+if add_sidebar == 'Beta Model' and add_sidebar2 == 'Private Equity':
+    st.write('Beta Model - Private Equity')
+    bmrks = tuple(asset_prices.columns)
+    ticker_select = st.selectbox('Select Benchmark', bmrks)
+    chart_data = pd.DataFrame(asset_prices[ticker_select], columns=[ticker_select])
+    st.line_chart(chart_data)
+
+    fig = px.line(asset_prices[ticker_select])
+    st.plotly_chart(fig)
+
+if add_sidebar == 'Income Model' and add_sidebar2 == 'Private Equity':
+    st.write('Income Model - Private Equity')
+    bmrks = tuple(asset_prices.columns)
+    ticker_select = st.selectbox('Select Benchmark', bmrks)
+    plot()
+    chart_data = pd.DataFrame(asset_prices[ticker_select], columns=[ticker_select])
+    area = st.checkbox('Area Chart')
+    line = st.checkbox('Line Chart')
+    if area:
+        st.area_chart(chart_data)
+    if line:
+        st.line_chart(chart_data)
+        
 
 # Streamlit widgets automatically run the script from top to bottom. Since
 # this button is not connected to any other logic, it just causes a plain
