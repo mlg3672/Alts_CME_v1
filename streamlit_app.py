@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import time
 import pandas as pd
-import plotly.express as px
+# import plotly.express as px
 import plotly.graph_objects as go
 
 def plot():
@@ -46,9 +46,6 @@ if add_sidebar == 'Beta Model' and add_sidebar2 == 'Private Equity':
     ticker_select = st.selectbox('Select Benchmark', bmrks)
     chart_data = pd.DataFrame(asset_prices[ticker_select], columns=[ticker_select])
     st.line_chart(chart_data)
-
-    fig = px.line(asset_prices[ticker_select])
-    st.plotly_chart(fig)
 
 if add_sidebar == 'Income Model' and add_sidebar2 == 'Private Equity':
     st.write('Income Model - Private Equity')
