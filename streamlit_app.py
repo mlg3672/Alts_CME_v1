@@ -4,20 +4,15 @@ import time
 import pandas as pd
 
 
-st.title("🎈 My new app")
+st.title("Alteratives CME - Beta Models")
 st.write(
-    "Let's start building hey hey ehy ! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
+    "beta models"
 )
+#Model 0
 progress_bar = st.sidebar.progress(0)
 status_text = st.sidebar.empty()
 last_rows = np.random.randn(1, 1)
 chart = st.line_chart(last_rows)
-
-chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
-
-st.line_chart(chart_data)
-st.line_chart(chart_data)
-
 
 for i in range(1, 101):
     new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
@@ -26,6 +21,24 @@ for i in range(1, 101):
     progress_bar.progress(i)
     last_rows = new_rows
     time.sleep(0.05)
+
+#Modle 1
+st.write(
+    "beta models"
+)
+chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
+
+
+st.line_chart(chart_data)
+
+# Model 2
+st.write(
+    "beta models"
+)
+st.line_chart(chart_data)
+
+
+
 
 progress_bar.empty()
 
