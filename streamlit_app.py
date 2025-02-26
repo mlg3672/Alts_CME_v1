@@ -2,11 +2,11 @@ import streamlit as st
 import numpy as np
 import time
 import pandas as pd
-# import plotly.express as px
+import plotly.express as px
 import plotly.graph_objects as go
 
 def plot():
-
+    '''creates a multiselection dropdown for line chart'''
     df = load_data()
 
     clist = df.columns
@@ -20,8 +20,16 @@ def plot():
 
     st.plotly_chart(fig)
 
-# 
-# #load data
+def beta_model():
+    '''takes input DataFrame time series of returns, calculates sharpe ratio in expanding window'''
+    ts = load_data()
+    t = tuple(ts.columns)
+    t_select = st.selectbox('Select Ticker', t)
+    s = ts[t_select]
+    stdev = s.expanding(30).std()
+    Sharpe = s/stdev 
+    st.line_chart(Sharpe)
+
 @st.cache_data
 def load_data():
     # path = '/Users/mgoe/Documents/PythonPrograms/data/allstock_prices.csv'
@@ -40,6 +48,7 @@ asset_prices = load_data()
 #add sidebar
 add_sidebar = st.sidebar.selectbox('Select Model', ('Beta Model','Income Model'))
 add_sidebar2 = st.sidebar.selectbox('Select Asset',('Private Equity','Private Credit','Private Real Estate'))
+st.sidebar.write('appears in sidebar')
 
 if add_sidebar == 'Beta Model' and add_sidebar2 == 'Private Equity':
     st.write('Beta Model - Private Equity')
@@ -54,10 +63,10 @@ if add_sidebar == 'Income Model' and add_sidebar2 == 'Private Equity':
     ticker_select = st.selectbox('Select Benchmark', bmrks)
     plot()
     chart_data = pd.DataFrame(asset_prices[ticker_select], columns=[ticker_select])
-    area = st.checkbox('Area Chart')
+    area = st.checkbox('Beta Model Chart')
     line = st.checkbox('Line Chart')
     if area:
-        st.area_chart(chart_data)
+        beta_model()
     if line:
         st.line_chart(chart_data)
         
